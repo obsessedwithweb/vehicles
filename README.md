@@ -8,6 +8,9 @@ A Django-based vehicle store application with vehicle listing, shopping cart fun
 - Python 3.x installed
 - Git installed
 
+### Go To your path
+- using mkdir
+
 ### Step 1: Clone the Repository
 ```
 git clone https://github.com/obsessedwithweb/vehicles.git
@@ -18,7 +21,7 @@ cd vehicles
 #### For Windows:
 ```
 python -m venv venv
-venv\Scripts\activate
+./venv/Scripts/activate
 ```
 
 #### For macOS/Linux:
@@ -33,7 +36,7 @@ pip install -r requirements.txt
 ```
 
 ### Step 4: Setup Environment Variables
-Create a `.env` file in the root directory with the following content:
+Create a `.env` file in the root directory with the following content:(.env file will be in the same level as requirements.txt)
 ```
 SECRET_KEY='django-insecure-ut95j890s2&!3+*_y=kb3spq*imm&d=$i*ni_db=-#o)=pdpr+'
 DEBUG=1

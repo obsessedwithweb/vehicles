@@ -1,0 +1,15 @@
+{% load static %}
+<nav class="icons-nav">
+    <a href="{% url 'cars-parts' %}" class="icon">
+        <img src="{% static 'images/crs.jpg' %}" alt="Cars">
+        <p>Cars</p>
+    </a>
+    <a href="{% url 'trucks-parts' %}" class="icon">
+        <img src="{% static 'images/trcks.jpg' %}" alt="Trucks">
+        <p>Trucks</p>
+    </a>
+    <a href="{% url 'bicycles-parts' %}" class="icon">
+        <img src="{% static 'images/bicy.jpg' %}" alt="Bicycles">
+        <p>Bicycles</p>
+    </a>
+</nav>

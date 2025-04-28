@@ -1,0 +1,197 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block styling %}
+<style>
+    .order-success-container {
+        max-width: 800px;
+        margin: 50px auto;
+        padding: 30px;
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+    
+    .success-icon {
+        font-size: 70px;
+        color: #4CAF50;
+        margin-bottom: 20px;
+    }
+    
+    .success-title {
+        font-size: 28px;
+        color: #333;
+        margin-bottom: 20px;
+    }
+    
+    .success-message {
+        font-size: 16px;
+        color: #666;
+        margin-bottom: 30px;
+        line-height: 1.6;
+    }
+    
+    .order-details {
+        text-align: left;
+        margin-top: 30px;
+        border-top: 1px solid #eee;
+        padding-top: 20px;
+    }
+    
+    .order-details h3 {
+        font-size: 22px;
+        color: #333;
+        margin-bottom: 15px;
+    }
+    
+    .customer-info, .order-items {
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .info-row {
+        display: flex;
+        margin-bottom: 10px;
+    }
+    
+    .info-label {
+        width: 140px;
+        font-weight: bold;
+        color: #555;
+    }
+    
+    .info-value {
+        flex: 1;
+        color: #333;
+    }
+    
+    .order-items-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    .order-items-table th {
+        background-color: #f2f2f2;
+        padding: 10px;
+        text-align: left;
+        font-weight: bold;
+        color: #333;
+    }
+    
+    .order-items-table td {
+        padding: 10px;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .order-totals {
+        text-align: right;
+        margin-top: 20px;
+        font-size: 18px;
+    }
+    
+    .order-total-amount {
+        font-weight: bold;
+        color: #da042a;
+    }
+    
+    .back-to-home {
+        display: inline-block;
+        background-color: #da042a;
+        color: white;
+        text-decoration: none;
+        padding: 12px 25px;
+        border-radius: 6px;
+        margin-top: 30px;
+        font-weight: bold;
+        transition: background-color 0.3s, transform 0.2s;
+    }
+    
+    .back-to-home:hover {
+        background-color: #c00427;
+        transform: translateY(-2px);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="order-success-container">
+    <div class="success-icon">
+        <i class="fas fa-check-circle"></i>
+    </div>
+    <h1 class="success-title">Order Placed Successfully!</h1>
+    <p class="success-message">
+        Thank you, {{ order.first_name }}! Your order #{{ order.id }} has been placed successfully.<br>
+        We will contact you shortly for confirmation. Payment will be collected upon delivery.
+    </p>
+    
+    <div class="order-details">
+        <h3>Order Details</h3>
+        
+        <div class="customer-info">
+            <div class="info-row">
+                <div class="info-label">Name:</div>
+                <div class="info-value">{{ order.first_name }} {{ order.last_name }}</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Phone:</div>
+                <div class="info-value">{{ order.phone }}</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Location:</div>
+                <div class="info-value">{{ order.wilaya }}, {{ order.daira }}</div>
+            </div>
+            {% if order.address %}
+            <div class="info-row">
+                <div class="info-label">Address:</div>
+                <div class="info-value">{{ order.address }}</div>
+            </div>
+            {% endif %}
+            {% if order.email %}
+            <div class="info-row">
+                <div class="info-label">Email:</div>
+                <div class="info-value">{{ order.email }}</div>
+            </div>
+            {% endif %}
+            <div class="info-row">
+                <div class="info-label">Order Date:</div>
+                <div class="info-value">{{ order.created_at|date:"F j, Y - g:i A" }}</div>
+            </div>
+        </div>
+        
+        <div class="order-items">
+            <h3>Ordered Items</h3>
+            <table class="order-items-table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in order_items %}
+                    <tr>
+                        <td>{{ item.product.name }}</td>
+                        <td>${{ item.price }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>${{ item.get_total }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            
+            <div class="order-totals">
+                <div>Total Amount: <span class="order-total-amount">${{ order.total_amount }}</span></div>
+            </div>
+        </div>
+    </div>
+    
+    <a href="{% url 'home' %}" class="back-to-home">
+        <i class="fas fa-home"></i> Back to Homepage
+    </a>
+</div>
+{% endblock %} 

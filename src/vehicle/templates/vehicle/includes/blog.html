@@ -1,0 +1,31 @@
+{% load static %}
+<section class="blog" id="blog">
+    <div class="container-blog">
+        <h2 class="section-title">Our Blog</h2>
+        <ul class="list has-scrollbar" id="blog-list">
+            {% for b in blogs %}
+                <li class="blog-card">
+                    <div class="card-banner">
+                        <a href="#">
+                            <img src="{{ b.image.url }}" alt="{{ b.image.name }}"
+                                 loading="lazy" class="w-100">
+                        </a>
+                        <a href="#" class="btn card-badge">Trucks</a>
+                    </div>
+                    <div class="card-content">
+                        <h3 class="h3 card-title"><a href="#">{{ b.title }}</a>
+                        </h3>
+                        <div class="card-meta">
+                            <div class="publish-date">
+                                <ion-icon name="time-outline"></ion-icon>
+                                <time datetime="{{ b.date }}">March 12, 2025</time>
+                                <!-- Use actual date for datetime -->
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            {% endfor %}
+
+        </ul>
+    </div>
+</section>

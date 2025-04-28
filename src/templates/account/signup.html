@@ -1,0 +1,56 @@
+{% extends "account/base.html" %}
+{% load i18n %}
+
+{% block head_title %}{% trans "Sign Up Disabled" %}{% endblock %}
+
+{% block extra_head %}
+<meta http-equiv="refresh" content="0;url={% url 'account_login' %}">
+<style>
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background-color: #f1f1f1;
+        font-family: Arial, sans-serif;
+    }
+    .redirect-message {
+        text-align: center;
+        padding: 20px;
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    .redirect-message h1 {
+        color: #da042a;
+        margin-bottom: 15px;
+    }
+    .redirect-message p {
+        margin-bottom: 20px;
+        color: #555;
+    }
+    .redirect-message a {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #da042a;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: bold;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="redirect-message">
+    <h1>{% trans "Registration Disabled" %}</h1>
+    <p>{% trans "New account registration is currently disabled." %}</p>
+    <p>{% trans "You are being redirected to the login page..." %}</p>
+    <a href="{% url 'account_login' %}">{% trans "Go to Login" %}</a>
+</div>
+
+<script>
+    window.location.href = "{% url 'account_login' %}";
+</script>
+{% endblock %} 

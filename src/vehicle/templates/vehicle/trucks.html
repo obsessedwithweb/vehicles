@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block styling %}
+    <link rel="stylesheet" href="{% static 'styles/trucks.css' %}">
+{% endblock %}
+
+{% block content %}
+    <main>
+        <div id="product-container">
+            {% for part in parts %}
+                <div class="product" data-product-id="{{ part.id }}">
+                    {% if part.image %}
+                        <img src="{{ part.image.url }}" alt="{{ part.name }}">
+                    {% else %}
+                        <img src="{% static 'img/placeholder.png' %}" alt="No image available">
+                    {% endif %}
+                    <h2>{{ part.name }}</h2>
+                    <p>{{ part.description }}</p>
+                    <div class="price">${{ part.price }}</div>
+                    <form action="{% url 'cart:add_to_cart' %}" method="post" class="add-cart-form">
+                        {% csrf_token %}
+                        <input type="hidden" name="product_id" value="{{ part.id }}">
+                        <input type="hidden" name="quantity" value="1">
+                        <input type="hidden" name="show_cart" value="true">
+                        <button type="submit" class="buy-btn">
+                            <i class="fas fa-cart-plus"></i> Add to Cart
+                        </button>
+                    </form>
+                </div>
+            {% endfor %}
+        </div>
+    </main>
+{% endblock %}
+{#<script src="Trucks.js"></script>#}

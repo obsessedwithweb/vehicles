@@ -1,0 +1,274 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load checkout_tags %}
+
+{% block styling %}
+    <style>
+        .required {
+            color: #E53935;
+            margin-left: 3px;
+            font-weight: bold;
+        }
+    
+        #backButton {
+            position: fixed;
+            margin-top: 80px; 
+            top: 20px;
+            left: 20px;
+            z-index: 995; 
+            background-color: #da042a;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 18px;
+            font-size: 0.95em;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            text-decoration: none;
+        }
+        #backButton i { font-size: 1em; }
+        #backButton:hover { background-color: #c00427; box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2); transform: translateY(-2px); }
+        #backButton:active { transform: translateY(0) scale(0.98); box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15); }
+    
+        .checkout-container {
+            max-width: 1100px;
+            margin: 40px auto; 
+            padding: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.08);
+        }
+
+        .order-summary,
+        .checkout-form-section { background-color: #fff; padding: 25px 30px; border: none; border-radius: 8px; box-sizing: border-box; }
+        .checkout-form-section { flex: 1.8; min-width: 400px; border-right: 1px solid #eee; padding-right: 40px; }
+        .order-summary { flex: 1; min-width: 320px; background-color: #fdfdfd; padding: 25px; border-radius: 8px; }
+        .checkout-form-section h2,
+        .order-summary h2 { margin-top: 0; margin-bottom: 30px; padding-bottom: 15px; border-bottom: 1px solid #e0e0e0; color: #da042a; font-size: 1.5em; font-weight: 600; display: flex; align-items: center; }
+        .checkout-form-section h2 i,
+        .order-summary h2 i { margin-right: 12px; font-size: 0.9em; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 6px; font-weight: 500; color: #444; font-size: 0.9em; }
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group input[type="tel"],
+        .form-group select,
+        .form-group textarea { width: 100%; padding: 10px 12px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 1em; color: #333; background-color: #fff; transition: border-color 0.2s ease; -webkit-appearance: none; -moz-appearance: none; appearance: none; }
+        .form-group select { background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23666%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E'); background-repeat: no-repeat; background-position: right 10px center; background-size: 10px auto; padding-right: 30px; cursor: pointer; }
+        .form-group select:disabled { background-color: #f2f2f2; cursor: not-allowed; opacity: 0.7; color: #888; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #da042a; outline: none; box-shadow: 0 0 0 2px rgba(218, 4, 42, 0.1); }
+        .form-group textarea { resize: vertical; min-height: 80px; }
+        .submit-order-btn { display: flex; justify-content: center; align-items: center; width: 100%; padding: 12px 20px; background-color: #da042a; color: white; border: none; border-radius: 6px; font-size: 1.1em; font-weight: 600; cursor: pointer; text-align: center; transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.3s ease; margin-top: 25px; box-shadow: 0 3px 8px rgba(218, 4, 42, 0.15); }
+        .submit-order-btn i { margin-right: 10px; font-size: 1.05em; }
+        .submit-order-btn:hover { background-color: #c00427; box-shadow: 0 5px 12px rgba(218, 4, 42, 0.25); }
+        .submit-order-btn:active { transform: scale(0.98); box-shadow: 0 2px 5px rgba(218, 4, 42, 0.2); }
+        .submit-order-btn:disabled, .submit-order-btn[disabled] { background-color: #ccc; color: #666; cursor: not-allowed; box-shadow: none; }
+        .form-error-message { color: #a94442; background-color: #f2dede; border: 1px solid #ebccd1; padding: 12px 15px; margin-top: 15px; border-radius: 4px; text-align: center; font-size: 0.9em; display: none; }
+        #checkoutItemsContainer { margin-bottom: 25px; max-height: 450px; overflow-y: auto; padding-right: 10px; }
+        .checkout-item { display: flex; align-items: flex-start; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #f0f0f0; gap: 15px; }
+        .checkout-item:last-child { border-bottom: none; margin-bottom: 0; }
+        .checkout-item img { width: 65px; height: 65px; object-fit: cover; border-radius: 6px; border: 1px solid #eee; }
+        .checkout-item-details { flex-grow: 1; display: flex; flex-direction: column; }
+        .checkout-item-name { font-weight: 600; font-size: 1em; color: #444; margin-bottom: 5px; line-height: 1.3; }
+        .checkout-item-info { font-size: 0.85em; color: #777; margin-bottom: 5px; }
+        .checkout-item-line-price { font-size: 0.95em; font-weight: 600; color: #555; margin-top: auto; text-align: right; }
+        .checkout-total { border-top: 2px solid #eee; padding-top: 20px; margin-top: 10px; text-align: right; }
+        .checkout-total h3 { margin: 0; font-size: 1.4em; color: #333; font-weight: 600; }
+        #checkoutTotalAmount { font-weight: bold; color: #da042a; margin-left: 10px; }
+    
+        @media (max-width: 992px) {
+            .checkout-container { flex-direction: column; padding: 20px; gap: 30px; margin-top: 40px; }
+            .order-summary, .checkout-form-section { min-width: 100%; flex: none; border-right: none; padding-right: 30px; }
+            .checkout-form-section { padding-right: 30px; }
+            .order-summary { background-color: #f8f9fa; padding: 20px; }
+            #backButton {
+                 margin-top: 75px; /* Adjust if needed */
+                 top: 15px; left: 15px; padding: 8px 14px; font-size: 0.9em;
+            }
+        }
+        @media (max-width: 768px) {
+            header { flex-direction: column; text-align: center; padding: 15px;  }
+            .checkout-container { margin: 20px auto; padding: 15px; }
+            .checkout-form-section, .order-summary { padding: 20px; }
+            .checkout-form-section h2, .order-summary h2 { font-size: 1.3em; }
+            .nav-menu { flex-direction: column; gap: 10px; align-items: center; width: 100%; }
+            .cart-login { flex-direction: column; width: 100%; gap: 10px; }
+             #backButton {
+                 margin-top: 110px; 
+                 top: 10px; left: 10px; padding: 7px 12px; font-size: 0.85em; gap: 6px;
+             }
+        }
+        @media (max-width: 480px) {
+            .checkout-container { margin: 15px auto; padding: 10px; gap: 20px; }
+            .checkout-form-section, .order-summary { padding: 15px; }
+            .checkout-form-section h2, .order-summary h2 { font-size: 1.2em; margin-bottom: 20px; padding-bottom: 10px; }
+            .logo img { height: 50px; }
+             #backButton {
+                 margin-top: 100px; 
+                 top: 8px; left: 8px; padding: 6px 10px; font-size: 0.8em; border-radius: 6px;
+             }
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<a href="{% url 'cart:view_cart' %}" id="backButton" aria-label="Go back to cart">
+    <i class="fas fa-arrow-left"></i> Back to Cart
+</a>
+
+    <main>
+        <div class="checkout-container">
+            <section class="checkout-form-section">
+                <h2><i class="fas fa-user-circle"></i> Customer Information</h2>
+            <form id="checkoutForm" action="{% url 'checkout:process_order' %}" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="firstName">First Name <span class="required">*</span></label>
+                    <input type="text" id="firstName" name="firstName" required>
+                </div>
+                <div class="form-group">
+                    <label for="lastName">Last Name <span class="required">*</span></label>
+                    <input type="text" id="lastName" name="lastName" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number <span class="required">*</span></label>
+                    <input type="tel" id="phone" name="phone" required pattern="[0-9\s+()-]+">
+                </div>
+                <div class="form-group">
+                    <label for="wilaya">State <span class="required">*</span></label>
+                    <select id="wilaya" name="wilaya" required>
+                        <option value="" disabled selected>-- Select State --</option>
+                        {% for value, name in wilaya_choices %}
+                            <option value="{{ value }}">{{ name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="daira">Municipality <span class="required">*</span></label>
+                    <input type="text" id="daira" name="daira" required>
+                </div>
+                <div class="form-group">
+                    <label for="address">Address (Optional)</label>
+                    <textarea id="address" name="address" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email (Optional)</label>
+                    <input type="email" id="email" name="email">
+                </div>
+                <div class="form-group">
+                    <label for="notes">Additional Notes</label>
+                    <textarea id="notes" name="notes" rows="3"></textarea>
+                </div>
+                    <div id="formError" class="form-error-message" style="display: none;"></div>
+                <button type="submit" class="submit-order-btn">
+                    <i class="fas fa-check-circle"></i> Place Order
+                </button>
+                </form>
+            </section>
+        
+            <section class="order-summary">
+                <h2><i class="fas fa-receipt"></i> Order Summary</h2>
+            <div id="checkoutItemsContainer">
+                {% if cart_items %}
+                    {% for item in cart_items %}
+                        <div class="checkout-item">
+                            {% if item.product.image %}
+                                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                            {% else %}
+                                <img src="{% static 'img/placeholder.png' %}" alt="No image">
+                            {% endif %}
+                            <div class="checkout-item-details">
+                                <span class="checkout-item-name">{{ item.product.name }}</span>
+                                <span class="checkout-item-info">Qty: {{ item.quantity }} × ${{ item.product.price }}</span>
+                                <span class="checkout-item-line-price">${{ item.quantity|multiply:item.product.price }}</span>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p style="text-align: center; color: #888; padding: 30px 0;">Your cart is empty. Cannot proceed to checkout.</p>
+                {% endif %}
+            </div>
+            <div class="checkout-total">
+                <h3>Total: <span id="checkoutTotalAmount">${{ cart.total_pricing }}</span></h3>
+            </div>
+            </section>
+        </div>
+    </main>
+{% endblock %}
+
+{% block extra_js %}
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const checkoutForm = document.getElementById('checkoutForm');
+            const formErrorElement = document.getElementById('formError');
+            const submitButton = checkoutForm?.querySelector('button[type="submit"]');
+
+        // Form validation
+        function validateForm(event) {
+            if (!checkoutForm || !formErrorElement) return true;
+
+                 formErrorElement.style.display = 'none'; 
+                 formErrorElement.textContent = '';
+                 let isValid = true;
+                 const requiredFields = checkoutForm.querySelectorAll('[required]:not(:disabled)');
+
+                 requiredFields.forEach(field => {
+                    if (!field.value || (field.tagName === 'SELECT' && field.value === "") || (field.type === 'tel' && !field.checkValidity())) {
+                         isValid = false;
+                         field.style.borderColor = '#E53935'; 
+                     } else {
+                         field.style.borderColor = '#ccc'; 
+                     }
+                 });
+
+                 if (!isValid) {
+                event.preventDefault();
+                     const firstInvalid = Array.from(requiredFields).find(field => !field.value || (field.tagName === 'SELECT' && field.value === "") || (field.type === 'tel' && !field.checkValidity()));
+                     if (firstInvalid) {
+                        firstInvalid.focus();
+                        firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                     }
+
+                     formErrorElement.textContent = "Please fill in all required fields (*) correctly.";
+                     formErrorElement.style.display = 'block';
+                return false;
+            }
+            
+            return true;
+        }
+
+        // Form submission
+        if (checkoutForm) {
+            checkoutForm.addEventListener('submit', validateForm);
+            
+                 checkoutForm.addEventListener('input', (e) => {
+                    const target = e.target;
+                    if (target.hasAttribute('required') && target.style.borderColor === 'rgb(229, 57, 53)') { 
+                         target.style.borderColor = '#ccc'; 
+                    }
+                    if (formErrorElement && formErrorElement.style.display !== 'none') {
+                        formErrorElement.style.display = 'none';
+                    }
+                 });
+            
+                  checkoutForm.addEventListener('change', (e) => { 
+                     const target = e.target;
+                     if (target.tagName === 'SELECT' && target.hasAttribute('required') && target.style.borderColor === 'rgb(229, 57, 53)') {
+                         target.style.borderColor = '#ccc';
+                     }
+                      if (formErrorElement && formErrorElement.style.display !== 'none') {
+                        formErrorElement.style.display = 'none';
+                    }
+                  });
+                }
+        }); 
+    </script>
+{% endblock %}

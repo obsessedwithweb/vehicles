@@ -1,0 +1,10 @@
+{% load static %}
+<div class="ads-bar">
+    <div class="ads-container">
+    {{ adv }}
+{#        For adv in advertisement #}
+        {% for a in adv %}
+        	<img src="{{ a.image.url }}" alt="Special offer - {{ a.image.name }}">
+        {% endfor %}
+    </div>
+</div>

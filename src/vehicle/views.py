@@ -368,3 +368,13 @@ def get_clients(request):
     except Exception as e:
         return JsonResponse({'success': False, 'message': str(e)}, status=500)
 
+
+class SearchView(ListView):
+    model = Vehicle
+    template_name = "vehicle/search.html"
+    context_object_name = "parts"
+
+    def get_queryset(self):
+        query = self.request.GET.get('search')
+        parts = Vehicle.objects.filter(name__icontains=query)
+        return parts

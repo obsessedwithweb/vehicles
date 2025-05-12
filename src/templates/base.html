@@ -16,7 +16,7 @@
     {% endblock %}
 
     <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
-    
+
     <script>
         function toggleCart() {
             const sidebar = document.getElementById('cartSidebar');
@@ -32,11 +32,12 @@
             window.location.href = "{% url 'home' %}";
         }
     </script>
-    
+
     {% if custom_script %}
-    <script>
+        <script>
         {{ custom_script|safe }}
-    </script>
+
+        </script>
     {% endif %}
 </head>
 <body data-session-id="{{ custom_session_id }}">
@@ -55,14 +56,16 @@
                     <li><a href="{% url 'trucks-parts' %}">Trucks</a></li>
                     <li><a href="{% url 'bicycles-parts' %}">Bicycles</a></li>
                 </ul>
-            <li><a href="{% url 'home'%}#about"><i class="fas fa-info-circle"></i> About Us</a></li>
-            <li><a href="{% url 'home'%}#contact"><i class="fas fa-envelope"></i> Contact Us</a></li>
+            <li><a href="{% url 'home' %}#about"><i class="fas fa-info-circle"></i> About Us</a></li>
+            <li><a href="{% url 'home' %}#contact"><i class="fas fa-envelope"></i> Contact Us</a></li>
         </ul>
     </nav>
     <section class="cart-login">
         <div class="search-box">
-            <input type="text" placeholder="Search for parts...">
-            <button><i class="fas fa-search"></i></button>
+            <form class="search-box" method="get" action="{% url 'search-parts' %}">
+                <input type="text" name="search" placeholder="Search for parts...">
+                <button><i class="fas fa-search"></i></button>
+            </form>
         </div>
         <div class="cart">
             <a href="javascript:void(0)" onclick="toggleCart()">
@@ -71,7 +74,7 @@
             </a>
         </div>
         <div class="login">
-            <a href="{% url 'account_login'  %}"><i class="fas fa-user-circle"></i> </a>
+            <a href="{% url 'account_login' %}"><i class="fas fa-user-circle"></i> </a>
         </div>
     </section>
     <div id="cartOverlay" class="cart-overlay" onclick="toggleCart()"></div>
@@ -102,9 +105,13 @@
                                     <form action="{% url 'cart:update_cart' %}" method="post" class="quantity-form">
                                         {% csrf_token %}
                                         <input type="hidden" name="product_id" value="{{ item.product.id }}">
-                                        <button type="submit" name="quantity" value="{{ item.quantity|add:'-1' }}" class="quantity-btn minus">-</button>
+                                        <button type="submit" name="quantity" value="{{ item.quantity|add:'-1' }}"
+                                                class="quantity-btn minus">-
+                                        </button>
                                         <span class="quantity">{{ item.quantity }}</span>
-                                        <button type="submit" name="quantity" value="{{ item.quantity|add:'1' }}" class="quantity-btn plus">+</button>
+                                        <button type="submit" name="quantity" value="{{ item.quantity|add:'1' }}"
+                                                class="quantity-btn plus">+
+                                        </button>
                                     </form>
                                 </div>
                             </div>

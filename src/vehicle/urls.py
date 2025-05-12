@@ -6,6 +6,7 @@ urlpatterns = [
     path('cars/', views.Cars.as_view(), name='cars-parts'),
     path('trucks/', views.Trucks.as_view(), name='trucks-parts'),
     path('bicycles/', views.Bicycles.as_view(), name='bicycles-parts'),
+    path('search', views.SearchView.as_view(), name='search-parts'),
     path('vehicle/<int:vehicle_id>/', views.vehicle_detail, name='vehicle-detail'),
     path('dashboard/', views.dashboard, name='dashboard'),
     
